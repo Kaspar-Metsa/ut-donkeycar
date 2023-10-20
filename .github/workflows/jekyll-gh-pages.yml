@@ -28,13 +28,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Ensures the entire repo is fetched
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
-          destination: ./_site
+          source: ./site  # Point to the 'site' directory
+          destination: ./site/_site  # The output will be in 'site/_site' directory
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
 
