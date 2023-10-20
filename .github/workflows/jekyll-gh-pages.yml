@@ -39,6 +39,8 @@ jobs:
           destination: ./site/_site  # The output will be in 'site/_site' directory
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./site/_site/
 
   # Deployment job
   deploy:
