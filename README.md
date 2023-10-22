@@ -25,3 +25,8 @@ The next step we took was to record more data to train a model capable of drivin
 
  All the data used for the training can be found in the "Data "folder https://drive.google.com/drive/folders/1je0wvIU8TGhNiOAY3CBUKet5GKjQtLky.
 
+# Next goals
+* Testing the steering model's performance against different obstacle arrangements on the track.
+* Completing the steering model by adding arrow sign recognition.
+* Creating a model responsible for stopping and starting the car.
+* Integrating the models with the car's software to enable the car to complete all challenges.
