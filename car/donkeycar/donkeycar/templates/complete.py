@@ -260,8 +260,11 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
         s = Sombrero()
 
     #IMU
-    add_imu(V, cfg)
-
+    if cfg.HAVE_IMU:
+        from donkeycar.parts.imu import IMU
+        imu = IMU(sensor=cfg.IMU_SENSOR, dlp_setting=cfg.IMU_DLP_CONFIG)
+        V.add(imu, outputs=['imu/acl_x', 'imu/acl_y', 'imu/acl_z',
+            'imu/gyr_x', 'imu/gyr_y', 'imu/gyr_z'], threaded=True)
 
     # Use the FPV preview, which will show the cropped image output, or the full frame.
     if cfg.USE_FPV:
@@ -666,7 +669,7 @@ def add_simulator(V, cfg):
         gym = DonkeyGymEnv(cfg.DONKEY_SIM_PATH, host=cfg.SIM_HOST, env_name=cfg.DONKEY_GYM_ENV_NAME, conf=cfg.GYM_CONF,
                            record_location=cfg.SIM_RECORD_LOCATION, record_gyroaccel=cfg.SIM_RECORD_GYROACCEL,
                            record_velocity=cfg.SIM_RECORD_VELOCITY, record_lidar=cfg.SIM_RECORD_LIDAR,
-                        #    record_distance=cfg.SIM_RECORD_DISTANCE, record_orientation=cfg.SIM_RECORD_ORIENTATION,
+                           record_distance=cfg.SIM_RECORD_DISTANCE, record_orientation=cfg.SIM_RECORD_ORIENTATION,
                            delay=cfg.SIM_ARTIFICIAL_LATENCY)
         threaded = True
         inputs = ['angle', 'throttle']
@@ -680,10 +683,10 @@ def add_simulator(V, cfg):
             outputs += ['vel/vel_x', 'vel/vel_y', 'vel/vel_z']
         if cfg.SIM_RECORD_LIDAR:
             outputs += ['lidar/dist_array']
-        # if cfg.SIM_RECORD_DISTANCE:
-        #     outputs += ['dist/left', 'dist/right']
-        # if cfg.SIM_RECORD_ORIENTATION:
-        #     outputs += ['roll', 'pitch', 'yaw']
+        if cfg.SIM_RECORD_DISTANCE:
+            outputs += ['dist/left', 'dist/right']
+        if cfg.SIM_RECORD_ORIENTATION:
+            outputs += ['roll', 'pitch', 'yaw']
 
         V.add(gym, inputs=inputs, outputs=outputs, threaded=threaded)
 
@@ -798,20 +801,6 @@ def add_odometry(V, cfg):
             V.add(enc, outputs=['enc/speed'], threaded=True)
         else:
             print("No supported encoder found")
-
-#
-# IMU setup
-#
-def add_imu(V, cfg):
-    imu = None
-    if cfg.HAVE_IMU:
-        from donkeycar.parts.imu import IMU
-
-        imu = IMU(sensor=cfg.IMU_SENSOR, addr=cfg.IMU_ADDRESS,
-                  dlp_setting=cfg.IMU_DLP_CONFIG)
-        V.add(imu, outputs=['imu/acl_x', 'imu/acl_y', 'imu/acl_z',
-                            'imu/gyr_x', 'imu/gyr_y', 'imu/gyr_z'], threaded=True)
-    return imu
 
 
 #
